@@ -16,7 +16,7 @@
 
 ## หลักการทำงาน
 
-เมื่อเราเปิด Workload Identity ใน GKE แล้ว จะมี Deamon Set ถูกรันขึ้นมาเพิ่ม 2 ตัว คือ
+เมื่อเราเปิด Workload Identity ใน GKE แล้ว จะมี Daemon Set ถูกรันขึ้นมาเพิ่ม 2 ตัว คือ
 
 1. [netd](https://github.com/GoogleCloudPlatform/netd)
 1. gke-metadata-server
