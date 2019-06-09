@@ -60,7 +60,7 @@ C: 3
     }
     ```
 
-2. copy ค่าออกมาใส่ในตัวแปรที่อยู่ใน scope ของ for
+1. copy ค่าออกมาใส่ในตัวแปรที่อยู่ใน scope ของ for
 
     ```go
     for _, a := range list {
@@ -80,7 +80,7 @@ C: 3
     }
     ```
 
-3. ไม่ต้องเก็บ pointer ใน map สิ
+1. ไม่ต้องเก็บ pointer ใน map สิ
 
     ```go
     nameToA := make(map[string]A)
