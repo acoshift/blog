@@ -88,7 +88,7 @@ Vary: Origin
 
 ```
 
-> Vary ให้ในการบอก Reverse Proxy (Cache, CDN) ว่า ถ้าจะ cache response นี้ ให้ cache แยกตาม Origin เช่นเราอนุญาตให้ `example.com` เข้าได้ แต่ไม่ให้ `evil.com` เข้า แต่ถ้าเราไม่บอก CDN ว่าถ้าจะ cache ให้ cache แยกตาม Origin ตอน `evil.com` เข้ามา อาจจะได้ผลลัพท์ของ `example.com` กลับไป
+> Vary ใช้ในการบอก Reverse Proxy (Cache, CDN) ว่า ถ้าจะ cache response นี้ ให้ cache แยกตาม Origin เช่นเราอนุญาตให้ `example.com` เข้าได้ แต่ไม่ให้ `evil.com` เข้า แต่ถ้าเราไม่บอก CDN ว่าถ้าจะ cache ให้ cache แยกตาม Origin ตอน `evil.com` เข้ามา อาจจะได้ผลลัพท์ของ `example.com` กลับไป
 
 ถ้าเราไม่อยากให้ Browser ส่ง request เข้ามาหล่ะ ?
 
@@ -120,3 +120,9 @@ Access-Control-Allow-Credentials: true
 เพราะถ้าเรา login ที่เว็บ `https://bank.com` แล้วทุกเว็บจะสามารถส่ง request มาโอนเงินออกจากบัญชีเราได้หมดเลย เพราะทุกเว็บที่ส่ง request มาที่ api ของ `bank.com` browser จะแนบ Cookie ที่ได้ตอน login ที่เว็บ `bank.com` มาด้วย
 
 บางคนอยากให้ทุกเว็บส่ง Cookie เข้ามาได้ ก็ต้องลักไก่ เอา Origin ที่มาจาก request ใส่เข้าไปใน Allow Origin แทน แต่ต้องคิดดี ๆ ก่อนทำ ไม่ฉะนั้นทุกเว็บจะได้ Cookie ไปใช้ได้เลย
+
+## References
+
+- [W3C](https://www.w3.org/TR/cors/)
+- [MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [RFC 6454](https://tools.ietf.org/html/rfc6454)
