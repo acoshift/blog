@@ -164,8 +164,9 @@ Access-Control-Allow-Credentials: true
 
 CORS คือสิ่งที่ Browser คุยกับ Server เพื่อถามว่า
 
-- จะให้ JavaScript ส่งอะไรไปหา Server บ้าง
-- จะให้ JavaScript อ่านอะไรจาก Server ได้บ้าง
+- จะให้ JavaScript ที่อยู่คนละ Origin กับ Server ส่ง Request ไปหาได้ไหม
+- ถ้าได้ จะให้ JavaScript ส่งอะไรไปหา Server บ้าง
+- แล้ว Response ที่ Server ส่งกลับมา จะให้ JavaScript อ่านอะไรได้บ้าง
 
 ## References
 
