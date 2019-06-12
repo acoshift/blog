@@ -4,6 +4,7 @@
 
 ## 2019
 
+- [0005 - ดู​ Logs จากหลาย ๆ Pods ใน Kubernetes ด้วย stern](./2019/0005-k8s-logs-stern.md)
 - [0004 - สรุป CORS แบบสั้น ๆ](./2019/0004-web-cors.md)
 - [0003 - ดึง Pointer ใน for range ใน Go ต้องระวัง](./2019/0003-go-for-range-pointer.md)
 - [0002 - กำหนดความสำคัญของ Pod ใน Kubernetes ด้วย Priority Class](./2019/0002-k8s-priority-class.md)
