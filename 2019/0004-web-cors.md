@@ -69,9 +69,8 @@ Access-Control-Request-Headers: Content-Type, X-Api-Key
 
 - ที่ path นี้ ให้ Origin `https://example.com` ส่ง request เข้ามาได้
 - ที่ path นี้ ให้ส่ง Method `GET` กับ `POST` เข้ามาได้
-- ที่ path นี้ ให้ส่ง Header `Content-Type` กับ `X-Api-Key` เข้ามาได้
+- ที่ path นี้ ให้ JavaScript ส่ง Header `Content-Type` กับ `X-Api-Key` เข้ามาได้
 - ที่ path นี้ ให้ส่ง Cookie เข้ามาได้
-- ที่ path นี้ ให้ JavaScript อ่าน Header `X-Request-Id` ได้, ถ้าเราไม่บอก Browser ถึงแม้เราจะส่ง header นี้กลับไปใน response แต่เราจะไม่สามารถเขียน JavaScript เข้าไปอ่าน header ตัวนี้ได้
 - ที่ path นี้ ให้ Browser จำคำตอบข้างบนไว้ 3600 วินาที จะได้ไม่ต้องมาถามซ้ำ
 
 Server จะต้องตอบ Browser กลับไปว่า
@@ -82,7 +81,6 @@ Access-Control-Allow-Origin: https://example.com
 Access-Control-Allow-Methods: GET, POST
 Access-Control-Allow-Headers: Content-Type, X-Api-Key
 Access-Control-Allow-Credentials: true
-Access-Control-Expose-Headers: X-Request-Id
 Access-Control-Max-Age: 3600
 Vary: Origin
 
@@ -100,6 +98,47 @@ Content-Type: text/plain
 Content-Length: 9
 
 Forbidden
+```
+
+นอกจากนี้เมื่อ Browser ส่ง Request จริงเข้ามา เราจะยังต้องตอบ browser บางคำตอบซ้ำ
+
+เช่น หลังจากที่ Browser ได้คำตอบว่า `api.example.com` อนุญาตให้ `https://example.com` ส่ง request เข้ามาได้
+
+Browser จะส่ง Request ที่เราเขียนใน JavaScript เข้ามาว่า
+
+```http
+POST /api1 HTTP/1.1
+Host: api.example.com
+Origin: https://example.com
+Cookie: sess=1234
+Content-Length: 16
+Content-Type: application/json
+X-Api-Key: key-1
+
+{"text":"hello"}
+```
+
+เราจะต้องแนบ header กลับไปบอก browser ต่อว่า
+
+- ให้ `https://example.com` อ่านนะ เผื่อ response ของอีก Origin ถูก cache ไว้ browser จะไม่ส่ง response นี้ไปให้ JavaScript ถึงแม้ว่าเรา inspect ดูแล้วจะได้ success ก็ตาม
+
+- ให้ส่ง Cookie เข้ามาได้ (ถึงแม้ว่า Server จะประมวลผลทุกอย่างเสร็จแล้ว แต่ถ้า Browser ส่ง Cookie ไป แล้วไม่เห็น header นี้ใน response อีกรอบ ก็จะไม่ส่ง response ไปให้ JavaScript)
+
+- ผลลัพท์นี้ ให้ JavaScript อ่าน Header `X-Request-Id` ได้
+
+    ถ้าเราไม่บอก Browser ถึงแม้เราจะส่ง header นี้กลับไปใน response แต่เราจะไม่สามารถเขียน JavaScript เข้าไปอ่าน header ตัวนี้ได้
+
+```http
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://example.com
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: X-Request-Id
+X-Request-Id: req-123
+Vary: Origin
+Content-Type: application/json
+Content-Length: 11
+
+{"ok":true}
 ```
 
 ## สำคัญมาก ๆ กับการ Allow all origin
@@ -120,6 +159,13 @@ Access-Control-Allow-Credentials: true
 เพราะถ้าเรา login ที่เว็บ `https://bank.com` แล้วทุกเว็บจะสามารถส่ง request มาโอนเงินออกจากบัญชีเราได้หมดเลย เพราะทุกเว็บที่ส่ง request มาที่ api ของ `bank.com` browser จะแนบ Cookie ที่ได้ตอน login ที่เว็บ `bank.com` มาด้วย
 
 บางคนอยากให้ทุกเว็บส่ง Cookie เข้ามาได้ ก็ต้องลักไก่ เอา Origin ที่มาจาก request ใส่เข้าไปใน Allow Origin แทน แต่ต้องคิดดี ๆ ก่อนทำ ไม่ฉะนั้นทุกเว็บจะได้ Cookie ไปใช้ได้เลย
+
+## สรุป
+
+CORS คือสิ่งที่ Browser คุยกับ Server เพื่อถามว่า
+
+- จะให้ JavaScript ส่งอะไรไปหา Server บ้าง
+- จะให้ JavaScript อ่านอะไรจาก Server ได้บ้าง
 
 ## References
 
