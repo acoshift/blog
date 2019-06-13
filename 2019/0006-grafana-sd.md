@@ -12,7 +12,7 @@
     $ gcloud iam service-accounts create grafana
     ```
 
-    > grafana คือชิ่อ service account ที่เราจะสร้าง
+    > grafana คือชื่อ service account ที่เราจะสร้าง
 
     > ถ้าไม่ได้ตั้ง default project ใน gcloud cli อย่าลืมใส่ --project=PROJECT_ID ด้วย
 
@@ -32,7 +32,7 @@
         --key-file-type=json
     ```
 
-    เราจะได้ key น่าตาประมาณนี้ ออกมา
+    เราจะได้ ไฟล์ `service_account.json` น่าตาประมาณนี้ ออกมา
 
     ```json
     {
@@ -65,8 +65,7 @@
 
 ![grafana-query](./0006-assets/grafana-create-query.jpg)
 
-
 ## ไม่มี Grafana
 
-ถ้าใครไม่ได้รัน Grafana สามารถทดลองใช้ที่ [grafana.moonrhythm.io](https://grafana.moonrhythm.io) ได้เลย
+ถ้าใครไม่ได้รัน Grafana สามารถเข้ามาเล่นได้ที่ [grafana.moonrhythm.io](https://grafana.moonrhythm.io)
 เพียงแค่ใช้ Google Sign In
