@@ -1,4 +1,4 @@
-# ดู​ Logs จากหลาย ๆ Pods ใน Kubernetes ด้วย stern
+# ดู Logs จากหลาย ๆ Pods ใน Kubernetes ด้วย stern
 
 ปกติเวลาเราจะดู logs ของ pod ที่อยู่ใน Kubernetes เราจะต้องหาก่อนว่า pod นั้นชื่ออะไร
 
