@@ -187,7 +187,7 @@
     ```
 
     ```sh
-    $ go run .
+    $ go run main.go
     get: https://www.google.com
     connections: 0
     write: 675 bytes
