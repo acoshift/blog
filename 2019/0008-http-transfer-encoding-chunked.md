@@ -1,6 +1,6 @@
 # Transfer-Encoding: chunked ใน HTTP คืออะไร
 
-ปกติแล้วเวลาที่เราส่ง HTTP Request ไป เราจะต้องรู้ว่า content ที่เราจะส่งมีขนาดเท่าไร
+เวลาที่เราส่ง HTTP Request ไป เราจะต้องรู้ว่า content ที่เราจะส่งมีขนาดเท่าไร
 ไม่อย่างนั้น server ปลายทางจะไม่รู้ว่าเมื่อไรจบ 1 request
 
 เพราะว่าปกติแล้ว เราจะ reuse connection กัน, 1 connection รับ/ส่ง กันหลาย HTTP requests
