@@ -4,6 +4,7 @@
 
 ## 2019
 
+- [0009 - ทำไมถึงไม่ใช้ JWT เก็บ Session](./2019/0009-why-not-use-jwt.md)
 - [0008 - Transfer-Encoding: chunked ใน HTTP คืออะไร](./2019/0008-http-transfer-encoding-chunked.md)
 - [0007 - ดูการใช้งาน Connections ใน http.Client ใน Go](./2019/0007-go-track-client-conn.md)
 - [0006 - ดู Stackdriver Monitoring ใน Grafana](./2019/0006-grafana-sd.md)
