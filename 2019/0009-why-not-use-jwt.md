@@ -55,6 +55,12 @@
 
     ถ้าเราพัฒนา API Service ให้เป็น Stateless อยู่แล้ว ไม่น่าเกี่ยวกับการที่ JWT ทำให้ scale ง่าย
 
+1. Logout = ลบ JWT
+
+    เหมือนกับปัญหาเรื่อง Logout ไม่ได้ เพราะการลบ JWT ไม่ใช่การ Logout
+
+    การ Logout คือ ถึงจะไม่ได้ลบ Token ทิ้ง Token นั้นจะต้องไม่สามารถใช้ได้ทันทีที่ Logout
+
 1. ไม่มีปัญหาเรื่องการใช้ API หลาย Domain
 
     - Frontend และ API Service อยู่คนละ Origin
