@@ -4,6 +4,7 @@
 
 ## 2019
 
+- [0010 - Transaction ใน PostgreSQL](./2019/0010-postgresql-transaction.md)
 - [0009 - ทำไมถึงไม่ใช้ JWT เก็บ Session](./2019/0009-why-not-use-jwt.md)
 - [0008 - Transfer-Encoding: chunked ใน HTTP คืออะไร](./2019/0008-http-transfer-encoding-chunked.md)
 - [0007 - ดูการใช้งาน Connections ใน http.Client ใน Go](./2019/0007-go-track-client-conn.md)
