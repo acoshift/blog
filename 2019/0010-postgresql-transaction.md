@@ -176,7 +176,7 @@ commit;
     1. **Tx#2**
 
         ```sql
-        select * from accounts where id = 1;
+        select * from accounts;
         ```
 
         | id | balance |
@@ -199,7 +199,7 @@ commit;
     1. **Tx#2**
 
         ```sql
-        select * from accounts where id = 1;
+        select * from accounts;
         ```
 
         | id | balance |
