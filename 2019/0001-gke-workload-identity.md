@@ -47,7 +47,7 @@
 
     ```sh
     $ gcloud iam service-accounts add-iam-policy-binding \
-        --role roles/iam.serviceAccountTokenCreator \
+        --role roles/iam.workloadIdentityUser \
         --member "serviceAccount:[PROJECT_ID].svc.id.goog[my-namespace/my-ksa]" \
         my-gsa@[PROJECT_ID].iam.gserviceaccount.com
     ```
