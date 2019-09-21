@@ -16,7 +16,7 @@
 ### ข้อดีของ Short Pulling
 
 - เป็นวิธีทำระบบ realtime ที่ง่ายที่สุด
-- รันที่ไหนก็ได้ เพราะเป็นการเรียก api ธรรมดา
+- รันที่ไหนก็ได้ เพราะเป็นการเรียก HTTP ธรรมดา
 
 ### ข้อเสียของ Short Pulling
 
@@ -60,7 +60,7 @@ func getDataShortPulling(w http.ResponseWriter, r *http.Request) {
 ### ข้อดีของ Long Pulling
 
 - ประหยัด resource กว่า Short Pulling
-- รันที่ไหนก็ได้ เพราะเป็นการเรียก api ธรรมดา
+- รันที่ไหนก็ได้ เพราะเป็นการเรียก HTTP ธรรมดา
 
 ### ข้อเสียของ Long Pulling
 
