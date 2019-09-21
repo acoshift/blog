@@ -208,8 +208,9 @@ source.addEventListener('message', (ev) => {
     //
 })
 
-source.onmessage = function (event) {
-  alert(event.data);
+// หรือจะรับ ทุก event มาเลย
+source.onmessage = (ev) => {
+  console.log(ev)
 }
 ```
 
