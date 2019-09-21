@@ -101,15 +101,15 @@ startLongPolling() // หลังจากนั้นค่อยใช้ lon
 ปัญหาของ Long Polling แบบนี้คือ ถ้า data เปลี่ยนระหว่าง request เราจะไม่ได้ data นั้น เช่น
 
 ```
-           pull  pull
+           poll  poll
 Client: ----|-----|-----
 Server: -----|--|--|----
              1  2  wait
 ```
 
-จะเห็นว่าถ้า data เปลี่ยนจาก 1 เป็น 2 ระหว่างที่ไม่ได้ pull อยู่ client จะไม่ได้ data
+จะเห็นว่าถ้า data เปลี่ยนจาก 1 เป็น 2 ระหว่างที่ไม่ได้ poll อยู่ client จะไม่ได้ data
 
-วิธีแก้คือ อาจจะต้องส่ง token (เช่น timestamp) ของ data ล่าสุดไป แล้วเวลา pull ให้เอา token นั้นส่งกลับไปหา server
+วิธีแก้คือ อาจจะต้องส่ง token (เช่น timestamp) ของ data ล่าสุดไป แล้วเวลา poll ให้เอา token นั้นส่งกลับไปหา server
 
 ## Web Socket
 
