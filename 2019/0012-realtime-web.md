@@ -78,7 +78,13 @@ func getDataLongPolling(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    <-untilNewDataReceived()
+    select {
+    case <-untilNewDataReceived():
+    case <-r.Context().Done():
+        // client close connection
+        return
+    }
+
 
     data := getData()
 
