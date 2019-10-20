@@ -215,11 +215,11 @@ Transaction Isolation คือการกำหนดว่าจะให้ 
 > ตารางข้างล่างนี้่เป็น isolation ของ PostgreSQL ซึ่งต่างกับ SQL Standard
 
 | Level | Dirty Read | Nonrepeatable Read | Phantom Read |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | Read uncommitted | ไม่เกิดขึ้น | มีโอกาสเกิด | มีโอกาสเกิด |
 | Read committed | ไม่เกิดขึ้น | มีโอกาสเกิด | มีโอกาสเกิด |
 | Repeatable read | ไม่เกิดขึ้น | ไม่เกิดขึ้น | ไม่เกิดขึ้น |
-| Serializable | ไม่เกิดขึ้น | ไม่เกิดขึ้น | ไม่เกิดขึ้น | ไม่เกิดขึ้น |
+| Serializable | ไม่เกิดขึ้น | ไม่เกิดขึ้น | ไม่เกิดขึ้น |
 
 ถ้าดูจากตารางจะเห็นว่าเราสามารถเรียกใช้ isolation level ได้ 4 levels แต่ PostgreSQL implement แค่ 3 levels (Read uncommitted กับ Read committed ทำงานเหมือนกัน)
 
