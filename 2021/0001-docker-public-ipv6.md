@@ -1,6 +1,6 @@
 # แจก Public IPv6 ให้กับ Docker Container
 
-> บทความนี้ผมจะมาเล่าสิ่งที่เรียนรู้จากการที่ผมพยายามที่จะ assign public IPv6 ให้กับ docker continer
+> บทความนี้ผมจะมาเล่าสิ่งที่เรียนรู้จากการที่ผมพยายามที่จะ assign public IPv6 ให้กับ docker container
 
 ## ที่มา
 
