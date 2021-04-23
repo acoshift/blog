@@ -278,7 +278,7 @@ $ curl 192.168.1.2 -I
 curl: (7) Failed to connect to 192.168.1.2 port 80: No route to host
 ```
 
-เราจะต้องสร้าง interface ใหม่ เพ่ือ bridge ระหว่าง host กับ container
+เราจะต้องสร้าง interface ใหม่ เพื่อ bridge ระหว่าง host กับ container
 
 ```shell
 # [server]
