@@ -201,7 +201,7 @@ traceroute to 172.17.0.3 (172.17.0.3), 64 hops max, 52 byte packets
 
 จะเห็นว่ามันส่ง packet อ้อมไป router แล้วค่อยอ้อมกลับมาหา server แทนที่จะวิ่งผ่าน switch 10 Gbps
 
-## แล้วมีวิธีไหนที่ทำให้ Router มองเห็น Container ตรง ๆ ได้บ้าง ?\
+## แล้วมีวิธีไหนที่ทำให้ Router มองเห็น Container ตรง ๆ ได้บ้าง ?
 
 ก่อนอื่นลองมาดู network ของ docker ก่อนว่ามี driver อะไรบ้าง [https://docs.docker.com/network/](https://docs.docker.com/network/)
 
