@@ -286,7 +286,7 @@ curl: (7) Failed to connect to 192.168.1.2 port 80: No route to host
 # สร้าง interface ใหม่ ชื่อ docker_net
 $ sudo ip link add docker_net link enp2s0 type macvlan mode bridge
 
-# ให้ host ip เป็น 192.168.1.254 ตอนนี้จะ connect เข้าไปใน network ของ docker_net
+# ให้ host ip เป็น 192.168.1.254 ตอนที่จะ connect เข้าไปใน network ของ docker_net
 $ sudo ip addr add 192.168.1.254/32 dev docker_net
 
 # เปิดใช้ interface docker_net
