@@ -213,7 +213,7 @@ traceroute to 172.17.0.3 (172.17.0.3), 64 hops max, 52 byte packets
 
 ## ลองสร้าง Macvlan บน Docker
 
-ก่อนอิื่นเราต้องทำให้ Router มองเห็น subnet ที่เราจะรัน Container ก่อน
+ก่อนอื่นเราต้องทำให้ Router มองเห็น subnet ที่เราจะรัน Container ก่อน
 
 ตอนนี้ Router ของเราเป็น 192.168.0.0/24
 
