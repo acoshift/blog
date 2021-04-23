@@ -368,6 +368,17 @@ Destination=192.168.1.0/24
 EOF
 ```
 
+แล้วก็กลับไป config ที่ไฟล์ `20-wired.network` (เพิ่ม `MACVLAN=docker_net`)
+
+```
+[Match]
+Name=enp2s0
+
+[Network]
+DHCP=yes
+MACVLAN=docker_net
+```
+
 แล้วก็ restart systemd-networkd
 
 ```shell
