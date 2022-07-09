@@ -60,6 +60,18 @@ m.Use(&ratelimit.RateLimiter{
 
 ![ratelimit-concurrent-queue](./0001-assets/05.png)
 
+```go
+m.Use(&ratelimit.RateLimiter{
+	Strategy: &ratelimit.ConcurrentQueueStrategy{
+		Capacity: 500,  // maximum concurrent requests
+		Size:     5000, // maximum requests in queue
+	},
+	Key: func(r *http.Request) string {
+		return r.Host
+	},
+})
+```
+
 [source code](https://github.com/moonrhythm/parapet/blob/ad71925574ea213e07b9d28ce4d7f12952d839eb/pkg/ratelimit/concurrentqueue.go)
 
 ซึ่งขอเรียกวิธีนี้ว่า **Concurrent Queue Ratelimit** (ไม่แน่ใจคนอื่นเรียกว่าอะไร 🤪)
