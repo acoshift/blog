@@ -1,4 +1,4 @@
-# Max HTTP Header
+# Max HTTP Header Size
 
 > ใครที่เอา code server ขึ้นโดยที่ไม่ได้เอา reverse proxy มาคั่น ต้องระวังเรื่อง Max HTTP Request Header Size
 
