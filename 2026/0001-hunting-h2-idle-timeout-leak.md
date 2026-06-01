@@ -1,14 +1,14 @@
 # ตามล่า Memory Leak ที่ไม่ได้อยู่ใน Code เรา
 
-> บทความนี้มาเล่าว่า reverse proxy ตัวนึงของผม memory ค่อย ๆ ไต่ขึ้นจน OOM แล้วผมหามันไม่เจอ จนต้องงัด heap profiler ออกมา สุดท้ายมันไม่ได้อยู่ใน code เราเลย
+> บทความนี้มาเล่าว่า reverse proxy ตัวนึงของผม memory ค่อย ๆ ไต่ขึ้นจน OOM แล้วผมหาอยู่นานกว่าจะเจอ เลยลองหยิบ heap profiler มาช่วยดู สุดท้ายปรากฏว่ามันไม่ได้อยู่ใน code เรา
 
 ## เล่าที่มา
 
 ช่วงหลังผมเขียน reverse proxy ตัวใหม่ด้วย Rust (อยู่บน [pingora](https://github.com/cloudflare/pingora)) แล้วเอาขึ้น production
 
-อยู่ดี ๆ ก็สังเกตว่า RSS ของ pod มันค่อย ๆ ไต่ขึ้นเรื่อย ๆ ไม่ยอมลง ไต่ไปประมาณ **2 GB ต่อชั่วโมง** สุดท้ายก็ OOM แล้วโดน kill
+อยู่มาวันนึงก็สังเกตว่า RSS ของ pod มันค่อย ๆ ไต่ขึ้นเรื่อย ๆ ไม่ค่อยยอมลง ไต่ไปประมาณ **2 GB ต่อชั่วโมง** สุดท้ายก็ OOM แล้วโดน kill
 
-วิธีแก้เฉพาะหน้าตอนนั้นก็คือ... ตั้ง cronjob roll pod ทิ้งเป็นระยะ 😅 ซึ่งมันไม่ใช่วิธีแก้ที่ถูกต้องแน่ ๆ
+วิธีแก้เฉพาะหน้าตอนนั้นก็คือ... ตั้ง cronjob roll pod ทิ้งเป็นระยะไปก่อน 😅 ซึ่งก็คงไม่ใช่วิธีแก้ที่ถูกต้องสักเท่าไร
 
 ## หาเท่าไรก็ไม่เจอ
 
@@ -19,9 +19,9 @@
 1. เปิด jemalloc มาดู stats — เห็นว่า memory ขึ้นจริง แต่ก็ยังไม่รู้ว่าใครกิน
 1. ไปไล่แก้เรื่อง connection pool ที่สงสัยว่าจะ leak — แก้แล้วก็ยังไม่หาย
 
-จุดที่ทำให้ผมมั่นใจว่ามันคือ leak จริง ๆ ไม่ใช่ allocator แค่ไม่คืน memory ให้ OS ก็คือ ค่า `jemalloc_allocated_bytes` (live heap จริง ๆ ที่ยังถูกใช้อยู่) มันไต่ขึ้นเรื่อย ๆ ตามกัน
+จุดที่ทำให้ผมพอจะมั่นใจว่ามันน่าจะเป็น leak จริง ๆ ไม่ใช่แค่ allocator ไม่คืน memory ให้ OS ก็คือ ค่า `jemalloc_allocated_bytes` (live heap ที่ยังถูกใช้อยู่) มันไต่ขึ้นเรื่อย ๆ ตามกันไปด้วย
 
-> ถ้าเป็นแค่ allocator ไม่คืน OS ค่า RSS จะขึ้น แต่ `allocated_bytes` จะนิ่ง — แต่อันนี้มันขึ้นทั้งคู่ แปลว่ามีคนถือ memory ไว้จริง ๆ แล้วไม่ปล่อย
+> ถ้าเป็นแค่ allocator ไม่คืน OS ค่า RSS จะขึ้น แต่ `allocated_bytes` น่าจะนิ่ง — แต่อันนี้มันขึ้นทั้งคู่ ก็เลยเดาว่าน่าจะมีคนถือ memory ไว้แล้วไม่ปล่อย
 
 ## งัด Heap Profiler
 
@@ -29,9 +29,9 @@
 
 jemalloc มันมี heap profiling มาให้อยู่แล้ว เปิดได้ตอน runtime แล้วใช้ `jeprof` ดู
 
-trick คือใช้ `jeprof --base` เอา profile ของ pod ที่กำลัง leak มาลบกัน 2 ช่วงเวลาห่างกันไม่กี่นาที — ผลที่ได้คือเฉพาะส่วนที่ **โตขึ้น** ในช่วงนั้น ซึ่งก็คือตัว leak นั่นเอง
+trick ที่ผมใช้คือ `jeprof --base` เอา profile ของ pod ที่กำลัง leak มาลบกัน 2 ช่วงเวลาห่างกันไม่กี่นาที — ผลที่ได้คือเฉพาะส่วนที่ **โตขึ้น** ในช่วงนั้น ซึ่งก็น่าจะเป็นตัว leak นั่นเอง
 
-ผลออกมาชัดมาก
+ผลออกมาก็ค่อนข้างชัด
 
 | สัดส่วน | frame |
 |---|---|
@@ -41,13 +41,13 @@ trick คือใช้ `jeprof --base` เอา profile ของ pod ที�
 
 อ่านแล้วแปลได้ว่า → **state ของ downstream HTTP/2 connection มันสะสมขึ้นเรื่อย ๆ** ทั้ง read buffer (`BytesMut`) และ timeout future ของแต่ละ connection
 
-ที่สำคัญคือ มันอยู่ใน `pingora_*` ทั้งหมดเลย ไม่ใช่ code เรา 🤯 มิน่าหาเท่าไรก็ไม่เจอ
+ที่น่าสนใจคือ มันอยู่ใน `pingora_*` แทบทั้งหมด ไม่ใช่ code เรา 🤯 มิน่าหาอยู่ตั้งนานถึงไม่เจอ
 
 ## Root Cause
 
 พอรู้ว่าอยู่ใน HTTP/2 serve loop ของ pingora ก็ไปเปิด code มันอ่าน
 
-ปรากฏว่า downstream H2 serve loop ของ pingora 0.8 (`apps/mod.rs`) มัน **ไม่มี idle timeout เลย** — มี comment ของมันเองเขียนไว้ว่า `// TODO: add a timeout?`
+ปรากฏว่า downstream H2 serve loop ของ pingora 0.8 (`apps/mod.rs`) มัน **ยังไม่มี idle timeout** — มี comment ของมันเองเขียนไว้ว่า `// TODO: add a timeout?`
 
 ```rust
 loop {
@@ -57,17 +57,17 @@ loop {
 }
 ```
 
-ปัญหาคือ พอ client ทำ H2 handshake เสร็จแล้วเงียบ (ไม่ส่ง stream อะไรมาต่อ) หรือ TCP มัน half-open ไปเลย (หลุดโดยไม่ส่ง RST มาบอก) — loop นี้มันจะไป block อยู่ที่ `from_h2_conn` รอ stream ถัดไป**ตลอดกาล**
+ปัญหาคือ พอ client ทำ H2 handshake เสร็จแล้วเงียบ (ไม่ส่ง stream อะไรมาต่อ) หรือ TCP มัน half-open ไป (หลุดโดยไม่ส่ง RST มาบอก) — loop นี้ก็จะไป block อยู่ที่ `from_h2_conn` รอ stream ถัดไปไปเรื่อย ๆ โดยไม่มีกำหนด
 
-ไม่มีใครปิด connection นั้นเลย ทำให้ทุกอย่างที่ผูกกับ connection นั้น — h2 state, read buffer, timeout future ของแต่ละ read — ค้างอยู่ใน heap ไปเรื่อย ๆ
+แล้วก็ไม่มีอะไรไปปิด connection นั้นให้ ทำให้ทุกอย่างที่ผูกกับ connection นั้น — h2 state, read buffer, timeout future ของแต่ละ read — ค้างอยู่ใน heap ไปเรื่อย ๆ
 
 แล้วทำไมมันถึงสะสมเยอะขนาดนั้น ?
 
 ก็เพราะ access log ของผมมันเต็มไปด้วย **scanner** ที่ยิงตรงเข้ามา — random SNI บ้าง, `connection closed before reading preface` บ้าง, ยิงตรงเข้า IP โดยไม่ผ่าน Cloudflare บ้าง (อันนี้เคยเล่าไปแล้วใน [0003 - อย่าเปิด Reverse Proxy เองถ้าไม่มีระบบป้องกัน DDoS](../2022/0003-no-reverse-proxy-ddos.md))
 
-พวก scanner พวกนี้แหละที่ต่อ H2 เข้ามาแล้วทิ้งไว้เฉย ๆ connection ละนิดละหน่อย แต่พอมีเยอะ ๆ เข้าก็กลายเป็น leak ที่ไม่มีเพดาน
+พวก scanner เหล่านี้แหละที่ต่อ H2 เข้ามาแล้วทิ้งไว้เฉย ๆ connection ละนิดละหน่อย แต่พอสะสมเยอะ ๆ เข้าก็เลยกลายเป็น leak ที่ค่อย ๆ โตไปเรื่อย ๆ
 
-> นี่คือเหตุผลว่าทำไม reproduce แบบ application-level ไม่เจอ — เพราะมันไม่ได้เกี่ยวกับ request เลย มันเกี่ยวกับ **connection** ที่ค้างไว้เฉย ๆ และมันอยู่ลึกใน library ไม่ใช่ code เรา
+> นี่ก็น่าจะเป็นเหตุผลว่าทำไม reproduce แบบ application-level ถึงไม่เจอ — เพราะมันไม่ได้เกี่ยวกับ request แต่ไปเกี่ยวกับ **connection** ที่ค้างไว้เฉย ๆ แล้วก็อยู่ลึกใน library ไม่ใช่ code เรา
 
 ## วิธีแก้
 
@@ -114,7 +114,7 @@ loop {
     };
     ```
 
-จุดที่ตั้งใจคือ ตอน timeout แล้วจะ drop connection เลย ไม่รอ graceful GOAWAY — เพราะถ้า peer มันตายไปแล้ว (half-open) การรอ GOAWAY ก็จะไปค้างอีก กลายเป็นไม่ได้แก้อะไร
+จุดที่ตั้งใจคือ ตอน timeout แล้วจะ drop connection ทิ้งไปเลย ไม่รอ graceful GOAWAY — เพราะถ้า peer มันตายไปแล้ว (half-open) การรอ GOAWAY ก็อาจจะไปค้างอีก กลายเป็นไม่ได้ช่วยอะไร
 
 ค่า default ตั้งไว้ที่ **60 วินาที** (ให้ตรงกับ H1 keepalive default) แล้วเปิดให้ override ผ่าน env `PINGORA_H2_IDLE_TIMEOUT_SECS`
 
@@ -122,18 +122,18 @@ loop {
 
 verify บน build ที่ patch แล้ว
 
-- **idle H2 connection** → โดนปิดตรง timeout เป๊ะ (ตั้ง `PINGORA_H2_IDLE_TIMEOUT_SECS=3` แล้วมันปิดที่ 3.03 วินาที)
+- **idle H2 connection** → โดนปิดตรงตาม timeout พอดี (ตั้ง `PINGORA_H2_IDLE_TIMEOUT_SECS=3` แล้วมันปิดที่ราว ๆ 3.03 วินาที)
 - **SSE stream ที่ถือค้างไว้** → อยู่รอดตลอด ไม่โดนปิดตาม idle timeout (ไม่ regression)
-- test ทั้ง 105 ตัวผ่านหมด
+- test ทั้ง 105 ตัวก็ยังผ่านหมด
 
-พอ deploy จริง ค่า `jemalloc_allocated_bytes` ก็แบนราบ ไม่ไต่ขึ้นอีก 🎉
+พอ deploy จริง ค่า `jemalloc_allocated_bytes` ก็ดูแบนราบลง ไม่ค่อยไต่ขึ้นอีก 🎉
 
 ## สรุป
 
-- leak ไม่จำเป็นต้องอยู่ใน code เราเสมอไป มันอาจจะอยู่ใน library/dependency ที่เราใช้ก็ได้ — ไล่อ่าน code ตัวเองอย่างเดียวบางทีไม่พอ
-- ถ้าหา leak ด้วยตาไม่เจอ ให้งัด **heap profiler** ออกมา (jemalloc + `jeprof --base` เทียบ 2 ช่วงเวลา) มันจะชี้ตัวคนกิน memory ให้เลย ไม่ต้องเดา
-- ทุก connection ที่รับตรงจาก internet **ต้องมี idle timeout** ไม่อย่างนั้นพวก scanner ที่ต่อแล้วทิ้งไว้เฉย ๆ จะกลายเป็น leak ที่ไม่มีเพดาน
-- เรื่อง idle/half-open connection กับการกิน memory นี่เป็นธีมเดิม ๆ ที่เคยเล่าไปหลายรอบแล้ว ([0001](../2022/0001-concurrent-queue-ratelimit.md), [0002](../2022/0002-max-http-header.md), [0003](../2022/0003-no-reverse-proxy-ddos.md)) — เปลี่ยนภาษาจาก Go มาเป็น Rust ก็ยังหนีไม่พ้น 😆
+- leak ไม่จำเป็นต้องอยู่ใน code เราเสมอไป บางทีมันก็อยู่ใน library/dependency ที่เราใช้ — ไล่อ่าน code ตัวเองอย่างเดียวบางทีก็ยังไม่พอ
+- ถ้าหา leak ด้วยตาไม่ค่อยเจอ ลองหยิบ **heap profiler** มาช่วยดู (jemalloc + `jeprof --base` เทียบ 2 ช่วงเวลา) มันพอจะชี้ตัวคนกิน memory ให้ได้ ไม่ต้องเดาเอาเอง
+- connection ที่รับตรงจาก internet ก็ควรจะมี idle timeout เผื่อไว้ ไม่งั้นพวก scanner ที่ต่อแล้วทิ้งไว้เฉย ๆ ก็อาจจะค่อย ๆ สะสมจนกลายเป็น leak ได้
+- เรื่อง idle/half-open connection กับการกิน memory นี่ก็เป็นธีมเดิม ๆ ที่เคยเล่าไปหลายรอบแล้ว ([0001](../2022/0001-concurrent-queue-ratelimit.md), [0002](../2022/0002-max-http-header.md), [0003](../2022/0003-no-reverse-proxy-ddos.md)) — เปลี่ยนภาษาจาก Go มาเป็น Rust ก็ดูเหมือนจะยังหนีไม่พ้น 😆
 
 ---
 
